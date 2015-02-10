@@ -35,8 +35,11 @@ public class HtmlDialogFragment extends DialogFragment
 
     private static final String KEY_HTML_RES_ID = "keyHtmlResId";
     private static final String KEY_TITLE = "keyTitle";
-    private static final String KEY_SHOW_CLOSE_BUTTON = "keyShowCloseButton";
-    private static final String KEY_CLOSE_BUTTON_TEXT = "keyCloseButtonText";
+    private static final String KEY_SHOW_NEGATIVE_BUTTON = "keyShowNegativeButton";
+    private static final String KEY_NEGATIVE_BUTTON_TEXT = "keyNegativeButtonText";
+    private static final String KEY_SHOW_POSITIVE_BUTTON = "keyShowPositiveButton";
+    private static final String KEY_POSITIVE_BUTTON_TEXT = "keyPositiveButtonText";
+    private static final String KEY_CANCELABLE = "keyCancelable";
 
     private WebView mWebView;
     private ProgressBar mProgressBar;
@@ -44,10 +47,15 @@ public class HtmlDialogFragment extends DialogFragment
     private AsyncTask<Void, Void, String> mHtmlLoader;
 
     // These values are originally set by the client in HtmlDialog
+    private static HtmlDialogListener mListener;
+
     private int mHtmlResId;
     private String mTitle;
-    private boolean mShowCloseButton;
-    private String mCloseButtonText;
+    private boolean mShowNegativeButton;
+    private String mNegativeButtonText;
+    private boolean mShowPositiveButton;
+    private String mPositiveButtonText;
+    private boolean mCancelable;
 
     /**
      * <p>Return a new instance of {@code HtmlDialogFragment} with its bundle
@@ -55,22 +63,34 @@ public class HtmlDialogFragment extends DialogFragment
      *
      * <p>Called by {@link HtmlDialog#show()}.</p>
      *
+     * @param listener
      * @param htmlResId
      * @param title
-     * @param showCloseButton
-     * @param closeButtonText
+     * @param showNegativeButton
+     * @param negativeButtonText
+     * @param showPositiveButton
+     * @param positiveButtonText
+     * @param cancelable
      * @return
      */
-    public static HtmlDialogFragment newInstance(int htmlResId, String title,
-            boolean showCloseButton, String closeButtonText)
+    public static HtmlDialogFragment newInstance(HtmlDialogListener listener,
+            int htmlResId, String title,
+            boolean showNegativeButton, String negativeButtonText,
+            boolean showPositiveButton, String positiveButtonText,
+            boolean cancelable)
     {
+        mListener = listener;
+
         HtmlDialogFragment fragment = new HtmlDialogFragment();
 
         Bundle bundle = new Bundle();
         bundle.putInt(KEY_HTML_RES_ID, htmlResId);
         bundle.putString(KEY_TITLE, title);
-        bundle.putBoolean(KEY_SHOW_CLOSE_BUTTON, showCloseButton);
-        bundle.putString(KEY_CLOSE_BUTTON_TEXT, closeButtonText);
+        bundle.putBoolean(KEY_SHOW_NEGATIVE_BUTTON, showNegativeButton);
+        bundle.putString(KEY_NEGATIVE_BUTTON_TEXT, negativeButtonText);
+        bundle.putBoolean(KEY_SHOW_POSITIVE_BUTTON, showPositiveButton);
+        bundle.putString(KEY_POSITIVE_BUTTON_TEXT, positiveButtonText);
+        bundle.putBoolean(KEY_CANCELABLE, cancelable);
 
         fragment.setArguments(bundle);
 
@@ -91,8 +111,11 @@ public class HtmlDialogFragment extends DialogFragment
 
         mHtmlResId = args.getInt(KEY_HTML_RES_ID);
         mTitle = args.getString(KEY_TITLE);
-        mShowCloseButton = args.getBoolean(KEY_SHOW_CLOSE_BUTTON);
-        mCloseButtonText = args.getString(KEY_CLOSE_BUTTON_TEXT);
+        mShowNegativeButton = args.getBoolean(KEY_SHOW_NEGATIVE_BUTTON);
+        mNegativeButtonText = args.getString(KEY_NEGATIVE_BUTTON_TEXT);
+        mShowPositiveButton = args.getBoolean(KEY_SHOW_POSITIVE_BUTTON);
+        mPositiveButtonText = args.getString(KEY_POSITIVE_BUTTON_TEXT);
+        mCancelable = args.getBoolean(KEY_CANCELABLE);
     }
 
     @Override
@@ -110,6 +133,8 @@ public class HtmlDialogFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        setCancelable(mCancelable);
+
         View content = LayoutInflater.from(getActivity()).inflate(R.layout.html_fragment, null);
 
         mWebView = (WebView) content.findViewById(R.id.webView);
@@ -122,16 +147,38 @@ public class HtmlDialogFragment extends DialogFragment
 
         builder.setView(content);
 
-        if (mShowCloseButton && mCloseButtonText != null)
+        if (mShowNegativeButton && mNegativeButtonText != null)
         {
-            builder.setNegativeButton(mCloseButtonText,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.dismiss();
-                    }
-                });
+            builder.setNegativeButton(mNegativeButtonText,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            if (mListener != null)
+                            {
+                                mListener.onNegativeButtonPressed();
+                            }
+
+                            dialog.dismiss();
+                        }
+                    });
+        }
+
+        if (mShowPositiveButton && mPositiveButtonText != null)
+        {
+            builder.setPositiveButton(mPositiveButtonText,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            if (mListener != null)
+                            {
+                                mListener.onPositiveButtonPressed();
+                            }
+
+                            dialog.dismiss();
+                        }
+                    });
         }
 
         return builder.create();
@@ -191,5 +238,20 @@ public class HtmlDialogFragment extends DialogFragment
             }
 
         }.execute();
+    }
+
+    /**
+     * Called when the user clicks outside the dialog or presses the <b>Back</b>
+     * button.
+     */
+    @Override
+    public void onCancel(DialogInterface dialog)
+    {
+        super.onCancel(dialog);
+
+        if (mListener != null)
+        {
+            mListener.onDialogCancel();
+        }
     }
 }

@@ -17,10 +17,14 @@ import android.app.FragmentTransaction;
 public class HtmlDialog
 {
     private FragmentManager mFragmentManager;
+    private HtmlDialogListener mListener;
     private int mHtmlResId;
     private String mTitle;
-    private boolean mShowCloseButton;
-    private String mCloseButtonText;
+    private boolean mShowNegativeButton;
+    private String mNegativeButtonText;
+    private boolean mShowPositiveButton;
+    private String mPositiveButtonText;
+    private boolean mCancelable = true;
 
     /**
      * The sole constructor for {@code HtmlDialog}.
@@ -45,6 +49,19 @@ public class HtmlDialog
     }
 
     /**
+     * <p>Sets the listener that will inform the client of the user's
+     * action.</p>
+     *
+     * <p>This is not required.</p>
+     *
+     * @param listener
+     */
+    public void setListener(HtmlDialogListener listener)
+    {
+        mListener = listener;
+    }
+
+    /**
      * Sets the resource Id of the html file to be shown.
      *
      * @param htmlResId
@@ -65,29 +82,65 @@ public class HtmlDialog
     }
 
     /**
-     * <p>Sets whether or not to show the Close button at
+     * <p>Sets whether or not to show the negative button at
      * the bottom of the dialog.</p>
      *
-     * <p>By default, no Close button is shown.</p>
+     * <p>By default, no negative button is shown.</p>
      *
-     * <p><b>Note:</b> If you show the Close button, make sure
-     * to call {@link #setCloseButtonText(String)}.</p>
+     * <p><b>Note:</b> If you show the negative button, make sure
+     * to call {@link #setNegativeButtonText(String)}.</p>
      *
-     * @param showCloseButton
+     * @param showNegativeButton
      */
-    public void setShowCloseButton(boolean showCloseButton)
+    public void setShowNegativeButton(boolean showNegativeButton)
     {
-        mShowCloseButton = showCloseButton;
+        mShowNegativeButton = showNegativeButton;
     }
 
     /**
-     * Sets the text to be displayed on the Close button.
+     * Sets the text to be displayed on the negative button.
      *
-     * @param closeButtonText
+     * @param negativeButtonText
      */
-    public void setCloseButtonText(String closeButtonText)
+    public void setNegativeButtonText(String negativeButtonText)
     {
-        mCloseButtonText = closeButtonText;
+        mNegativeButtonText = negativeButtonText;
+    }
+
+    /**
+     * <p>Sets whether or not to show the positive button at
+     * the bottom of the dialog.</p>
+     *
+     * <p>By default, no positive button is shown.</p>
+     *
+     * <p><b>Note:</b> If you show the positive button, make sure
+     * to call {@link #setPositiveButtonText(String)}.</p>
+     *
+     * @param showNegativeButton
+     */
+    public void setShowPositiveButton(boolean showPositiveButton)
+    {
+        mShowPositiveButton = showPositiveButton;
+    }
+
+    /**
+     * Sets the text to be displayed on the positive button.
+     *
+     * @param positiveButtonText
+     */
+    public void setPositiveButtonText(String positiveButtonText)
+    {
+        mPositiveButtonText = positiveButtonText;
+    }
+
+    /**
+     * Sets whether or not the dialog is cancelable.
+     *
+     * @param cancelable
+     */
+    public void setCancelable(boolean cancelable)
+    {
+        mCancelable = cancelable;
     }
 
     /**
@@ -98,10 +151,14 @@ public class HtmlDialog
     {
         HtmlDialogFragment dialogFragment =
                 HtmlDialogFragment.newInstance(
+                        mListener,
                         mHtmlResId,
                         mTitle,
-                        mShowCloseButton,
-                        mCloseButtonText);
+                        mShowNegativeButton,
+                        mNegativeButtonText,
+                        mShowPositiveButton,
+                        mPositiveButtonText,
+                        mCancelable);
 
         dialogFragment.show(mFragmentManager,
                 HtmlDialogFragment.TAG_HTML_DIALOG_FRAGMENT);
@@ -116,14 +173,28 @@ public class HtmlDialog
     {
         private FragmentManager fm;
 
+        private HtmlDialogListener listener;
         private int htmlResId;
         private String title;
-        private boolean showCloseButton;
-        private String closeButtonText;
+        private boolean showNegativeButton;
+        private String negativeButtonText;
+        private boolean showPositiveButton;
+        private String positiveButtonText;
+        private boolean cancelable = true;
 
         public Builder(FragmentManager fm)
         {
             this.fm = fm;
+        }
+
+        /**
+         * @see HtmlDialog#setListener(HtmlDialogListener)
+         */
+        public Builder setListener(HtmlDialogListener listener)
+        {
+            this.listener = listener;
+
+            return this;
         }
 
         /**
@@ -147,21 +218,51 @@ public class HtmlDialog
         }
 
         /**
-         * @see HtmlDialog#setShowCloseButton(boolean)
+         * @see HtmlDialog#setShowNegativeButton(boolean)
          */
-        public Builder setShowCloseButton(boolean showCloseButton)
+        public Builder setShowNegativeButton(boolean showNegativeButton)
         {
-            this.showCloseButton = showCloseButton;
+            this.showNegativeButton = showNegativeButton;
 
             return this;
         }
 
         /**
-         * @see HtmlDialog#setCloseButtonText(String)
+         * @see HtmlDialog#setNegativeButtonText(String)
          */
-        public Builder setCloseButtonText(String closeButtonText)
+        public Builder setNegativeButtonText(String negativeButtonText)
         {
-            this.closeButtonText = closeButtonText;
+            this.negativeButtonText = negativeButtonText;
+
+            return this;
+        }
+
+        /**
+         * @see HtmlDialog#setShowPositiveButton(boolean)
+         */
+        public Builder setShowPositiveButton(boolean showPositiveButton)
+        {
+            this.showPositiveButton = showPositiveButton;
+
+            return this;
+        }
+
+        /**
+         * @see HtmlDialog#setPositiveButtonText(String)
+         */
+        public Builder setPositiveButtonText(String positiveButtonText)
+        {
+            this.positiveButtonText = positiveButtonText;
+
+            return this;
+        }
+
+        /**
+         * @see HtmlDialog#setCancelable(boolean)
+         */
+        public Builder setCancelable(boolean cancelable)
+        {
+            this.cancelable = cancelable;
 
             return this;
         }
@@ -177,10 +278,14 @@ public class HtmlDialog
         public HtmlDialog build()
         {
             HtmlDialog dialog = new HtmlDialog(fm);
+            dialog.setListener(listener);
             dialog.setHtmlResId(htmlResId);
             dialog.setTitle(title);
-            dialog.setShowCloseButton(showCloseButton);
-            dialog.setCloseButtonText(closeButtonText);
+            dialog.setShowNegativeButton(showNegativeButton);
+            dialog.setNegativeButtonText(negativeButtonText);
+            dialog.setShowPositiveButton(showPositiveButton);
+            dialog.setPositiveButtonText(positiveButtonText);
+            dialog.setCancelable(cancelable);
 
             return dialog;
         }

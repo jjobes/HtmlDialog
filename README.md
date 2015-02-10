@@ -31,9 +31,6 @@ How to Use
 ``` java
 new HtmlDialog.Builder(getFragmentManager())
     .setHtmlResId(R.raw.licenses)
-    .setTitle(getResources().getString(R.string.title))
-    .setShowCloseButton(true)
-    .setCloseButtonText(getResources().getString(R.string.close))
     .build()
     .show();
 ```
@@ -51,24 +48,71 @@ This is required. Pass in the resource Id of an HTML file that resides /res/raw/
 ``` java
 .setTitle(String)
 ```
-By default, the dialog will have no title. You must provide one using `.setTitle()`.
+By default, the dialog will have no title.
 
-**To show a Close button at the bottom of the dialog:**
-
-``` java
-.setShowCloseButton(true)
-```
-
-By default, no Close button is shown. You must call `.setShowCloseButton(true)` to show one. 
-
-**To specify the text to display on the Close button:**
+**To show a negative button at the bottom of the dialog:**
 
 ``` java
-.setCloseButtonText(String)
+.setShowNegativeButton(true)
 ```
 
-Make sure to call this if you are showing the Close button.
+By default, no negative button is shown. 
 
+**To specify the negative button text:**
+
+``` java
+.setNegativeButtonText(String)
+```
+
+Make sure to call this if you are showing the negative button.
+
+**To show a positive button at the bottom of the dialog:**
+
+``` java
+.setShowPositiveButton(true)
+```
+By default, no positive button is shown.
+
+**To specify the positive button text:**
+
+``` java
+.setPositiveButtonText(String)
+```
+Make sure to call this if you are showing the positive button.
+
+**To force the user to click a button:**
+
+``` java
+.setCancelable(false)
+```
+This is useful if you are displaying a license agreement.
+
+**To specify a listener:**
+
+``` java
+.setListener(new HtmlDialogListener() {
+
+    @Override
+    public void onNegativeButtonPressed()
+    {
+        
+    }
+
+    @Override
+    public void onPositiveButtonPressed()
+    {
+        
+    }
+
+    @Override
+    public void onDialogCancel()
+    {
+        // This override is optional.
+        // Called when the user presses the Back button
+        // or touches outside the dialog.
+    }
+})
+```
 
 Contributing
 ============
@@ -76,6 +120,15 @@ Contributions are welcome. Please open up an issue in GitHub or submit a PR.
 
 Changelog
 =========
+
+### v1.1.0
+
+* removed setShowCloseButton() and setCloseButtonText()
+* added setShowNegativeButton(), setNegativeButtonText()
+* added setShowPositiveButton(), setPositiveButtonText()
+* added setCancelable()
+* added setListener()
+* updated SampleActivity
 
 ### v1.0.0
 
@@ -88,4 +141,3 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 Acknowledgements
 ================
 This project is based off of Adam Speakman's [AndroidLicensesPage](https://github.com/adamsp/AndroidLicensesPage).
-

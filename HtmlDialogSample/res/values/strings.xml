@@ -5,6 +5,7 @@
     <string name="app_name">HtmlDialogSample</string>
 
     <string name="title">Open Source Licenses</string>
-    <string name="close">Close</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 
 </resources>
