@@ -1,7 +1,7 @@
 HtmlDialog
 ===================
 
-HtmlDialog is an Android library that simplifies the display of HTML in a DialogFragment. It is useful for displaying open source licenses, EULAs, terms of service pages, etc. Tested on Android 4.0+.
+HtmlDialog is an Android library that simplifies the display of HTML in a DialogFragment. It is useful for displaying Open Source Licenses, EULAs, Terms of Service pages, etc. Tested on Android 4.0+.
 
 <img src="https://raw.github.com/jjobes/HtmlDialog/master/screenshots/1.png" width="270" style="margin-right:10px;">
 
