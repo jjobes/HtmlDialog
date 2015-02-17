@@ -12,7 +12,7 @@ To add this library to your project, add the following to your `builde.gradle`:
 
 ```groovy
 dependencies {
-   compile 'com.github.jjobes.htmldialog'
+   compile project(':htmlDialog')
 }
 ```
 
