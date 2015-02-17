@@ -116,7 +116,7 @@ public class HtmlDialog
      * <p><b>Note:</b> If you show the positive button, make sure
      * to call {@link #setPositiveButtonText(String)}.</p>
      *
-     * @param showNegativeButton
+     * @param showPositiveButton
      */
     public void setShowPositiveButton(boolean showPositiveButton)
     {

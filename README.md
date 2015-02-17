@@ -8,27 +8,19 @@ HtmlDialog is an Android library that simplifies the display of HTML in a Dialog
 Setup
 =====
 
-**Eclipse/ADT**:
-From your main project, simply reference the HtmlDialog library:
+To add this library to your project, add the following to your `builde.gradle`:
 
-Right-click on your main project name and select Properties.
-
-Select Android from the left column.
-
-Click Add.
-
-Select HtmlDialog.
-
-Click Apply and then OK.
-
-**Android Studio**:
-Coming soon.
+```groovy
+dependencies {
+   compile 'com.github.jjobes.htmldialog'
+}
+```
 
 How to Use
 ==========
 (See [SampleActivity](https://github.com/jjobes/HtmlDialog/blob/master/HtmlDialogSample/src/com/github/jjobes/htmldialog/sample/SampleActivity.java) for a more complete example)
 
-``` java
+```java
 new HtmlDialog.Builder(getFragmentManager())
     .setHtmlResId(R.raw.licenses)
     .build()
@@ -37,7 +29,7 @@ new HtmlDialog.Builder(getFragmentManager())
 
 **To set the resource Id of your HTML file:**
 
-``` java
+```java
 .setHtmlResId(int)
 ```
 
@@ -45,14 +37,14 @@ This is required. Pass in the resource Id of an HTML file that resides /res/raw/
 
 **To set the title of the dialog:**
 
-``` java
+```java
 .setTitle(String)
 ```
 By default, the dialog will have no title.
 
 **To show a negative button at the bottom of the dialog:**
 
-``` java
+```java
 .setShowNegativeButton(true)
 ```
 
@@ -60,7 +52,7 @@ By default, no negative button is shown.
 
 **To specify the negative button text:**
 
-``` java
+```java
 .setNegativeButtonText(String)
 ```
 
@@ -68,28 +60,28 @@ Make sure to call this if you are showing the negative button.
 
 **To show a positive button at the bottom of the dialog:**
 
-``` java
+```java
 .setShowPositiveButton(true)
 ```
 By default, no positive button is shown.
 
 **To specify the positive button text:**
 
-``` java
+```java
 .setPositiveButtonText(String)
 ```
 Make sure to call this if you are showing the positive button.
 
 **To force the user to click a button:**
 
-``` java
+```java
 .setCancelable(false)
 ```
 This is useful if you are displaying a license agreement.
 
 **To specify a listener:**
 
-``` java
+```java
 .setListener(new HtmlDialogListener() {
 
     @Override
@@ -120,6 +112,10 @@ Contributions are welcome. Please open up an issue in GitHub or submit a PR.
 
 Changelog
 =========
+
+### v1.1.1
+
+* Changed to Android Studio / Gradle project
 
 ### v1.1.0
 
