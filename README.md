@@ -113,6 +113,10 @@ Contributions are welcome. Please open up an issue in GitHub or submit a PR.
 Changelog
 =========
 
+### v1.1.2
+
+* Update build.gradle
+
 ### v1.1.1
 
 * Changed to Android Studio / Gradle project
